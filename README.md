@@ -74,7 +74,6 @@ e.g. if your database is called gadgets
 
 ```
 db = client.gadgets
-
 ```
 
 ### Set the list of Collections you wish to migrate
