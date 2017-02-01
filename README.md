@@ -2,7 +2,7 @@
 
 Being a user of [Orchestrate.io](https://orchestrate.io) was a pretty good bargain.  They maintained a decent nosql infrastructure and it was one less thing for me to worry about.
 
-With the demise of Orchestrate.io being imminent I had to find somewhere else to port my data.  Granted, there are other options like mlabs and AWS Dynamo, but for my purpose I decided to get some experience with MongoDB.
+With the demise of Orchestrate.io being imminent I had to find somewhere else to port my data.  Granted, there are other options like [mlab](https://mlab.com/) and [AWS Dynamodb](https://aws.amazon.com/dynamodb/), but for my purpose I decided to get some experience with MongoDB.
 
 The challenge was to write a script and essentially sync all my data from Orchestrate to MongoDB.  The script should be able to be run over and over, perhaps even on a cron job, to keep the Orchestrate data synced to MongoDB.
 
@@ -43,7 +43,7 @@ git clone https://github.com/0x3f8/OrchestrateToMongo.git
 ```
 Within the script you'll need to configure the following sections
 
-**Set the Orchestrate Endpoint**
+# Set the Orchestrate Endpoint
 
 The URI line is likely right, but you'll want to set *orcHost* to match your Orchestrate datacenter.  If you haven't already done so, you should generate and API key for your collections as well.
 
@@ -101,7 +101,9 @@ In the script you'll see the following reference
 record['value']['id']
 ```
 
-For my dataset this was a UUID that was generated for each record and was the same as what Orchestrate was using for the unique ID.  If you are using a unique ID in your key/value pairs you'll want to choose the field that matches.  If you don't have your own unique value, you have two choices.  You can used the values from Orchestrate which are at the record['key'] and record['ref'] references.  I may need to go back through my data once I get closer to production to verify that I'm not working with old records due to ref times.  I think Orchestrate keys aren't always unique and updates to records simply get a new ref and reftime.  The simplest solution if this is the case is to only update the record if the reftime is newer for the same key.  However, I'm pretty sure a standard list of the collection only includes newest items and you'd have to search for a specific key/ref to find older versions.
+For my dataset this was a UUID that was generated for each record and was the same as what Orchestrate was using for the unique ID.  If you are using a unique ID in your key/value pairs you'll want to choose the field that matches.  If you don't have your own unique value, you have two choices.  You can used the values from Orchestrate which are at the record['key'] and record['ref'] references or you can simply insert the data and MongoDB will generate a unique value for you.
+
+One caveat is that the Orchestrate record['key'] values are not unique due to their use of [Data Version History](https://orchestrate.io/docs/data-version-history).  My understanding is that with each record update the is a new object with the same key but a new *ref* and *reftime* key/value pairing.  Since I'm filtering my records by the unique key/value I've assigned in the record I believe I'm only pulling the latest data, but that remains to be tested.
 
 # Configure the credentials
 
