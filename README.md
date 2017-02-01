@@ -109,7 +109,7 @@ One caveat is that the Orchestrate record['key'] values are not unique due to th
 
 Finally you need to configure your credentials.  These will go in a file called *.netrc* that resides in the home folder of the user that will execute the script.  The file should only be owned by your user and set with permissions something like 0600.
 
-To prevent shoulder surfing of passwords I base64 encoded the mongo user password.  Yeah, kinda lame and only prevents the lowliest of script kiddies from doing anything directly with it.  To encode your pass do something like
+To prevent shoulder surfing of passwords I base64 encoded the mongo user password.  Yeah, kinda lame and only prevents the lowliest of script kiddies from doing anything directly with it.
 
 I'll leave how you base64 encode your password as an exercise for the reader, but if you do it at the terminal as your script you might want to clear it from history too.
 
