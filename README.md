@@ -43,7 +43,7 @@ git clone https://github.com/0x3f8/OrchestrateToMongo.git
 ```
 Within the script you'll need to configure the following sections
 
-# Set the Orchestrate Endpoint
+### Set the Orchestrate Endpoint
 
 The URI line is likely right, but you'll want to set *orcHost* to match your Orchestrate datacenter.  If you haven't already done so, you should generate and API key for your collections as well.
 
@@ -52,7 +52,7 @@ orcHost = 'api.ctl-uc1-a.orchestrate.io'
 orcURI = 'https://' + orcHost + '/v0'
 ```
 
-# Set the MongoDB Endpoint
+### Set the MongoDB Endpoint
 
 The endpoint can be Fully Qualified Domain Name, local resolvable hostname, or IP address for your MongoDB instance.  I haven't tested against a sharded cluster so use with caution if you give that a try.
 
@@ -68,7 +68,7 @@ mongoEndpoint = '192.168.0.1'
 mongoPort = '27017'
 mongoURI = "mongodb://" + mongoEndpoint + ":" + mongoPort
 ```
-# Set the MongoDB Database for the collections
+### Set the MongoDB Database for the collections
 
 e.g. if your database is called gadgets
 
@@ -77,7 +77,7 @@ db = client.gadgets
 
 ```
 
-# Set the list of Collections you wish to migrate
+### Set the list of Collections you wish to migrate
 
 This is a list of one or more Orchestrate collections you wish to populate into MongoDB.  The collection names in MongoDB will be mirrored exactly as they are in Orchestrate.
 
@@ -93,7 +93,7 @@ or to sync *foo* and *bar* do
 Collections = ['foo', 'bar']
 ```
 
-# Set your unique ID.
+### Set your unique ID.
 
 In the script you'll see the following reference
 
@@ -105,7 +105,7 @@ For my dataset this was a UUID that was generated for each record and was the sa
 
 One caveat is that the Orchestrate record['key'] values are not unique due to their use of [Data Version History](https://orchestrate.io/docs/data-version-history).  My understanding is that with each record update the is a new object with the same key but a new *ref* and *reftime* key/value pairing.  Since I'm filtering my records by the unique key/value I've assigned in the record I believe I'm only pulling the latest data, but that remains to be tested.
 
-# Configure the credentials
+### Configure the credentials
 
 Finally you need to configure your credentials.  These will go in a file called *.netrc* that resides in the home folder of the user that will execute the script.  The file should only be owned by your user and set with permissions something like 0600.
 
@@ -127,7 +127,7 @@ machine api.ctl-uc1-a.orchestrate.io
         password aabb8c20-38f3-4e41-a8e5-8bffdd7bbafa
 ```
 
-# Script Logic
+#### Script Logic
 
 The script operates as follows
 
@@ -136,6 +136,6 @@ The script operates as follows
 3. Authenticate to the specific MongoDB Database
 4. Iterate through each collection and
 
- - Create the collection if needed
- - Perform an update using the unique ID
- - If the record doesn't exist, one will be created
+- Creates the collection if needed
+- Perform an update using the unique ID
+- If the record doesn't exist, one will be created
