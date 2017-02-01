@@ -1,4 +1,4 @@
-# OrchestrateToMongo
+# Orchestrate To Mongo Sync Script
 
 Being a user of [Orchestrate.io](https://orchestrate.io) was a pretty good bargain.  They maintained a decent nosql infrastructure and it was one less thing for me to worry about.
 
