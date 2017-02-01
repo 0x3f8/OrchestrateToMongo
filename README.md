@@ -28,7 +28,6 @@ You should be able to install the other dependencies with
 
 
 ```
-
 $ sudo pip install pymongo
 $ sudo pip install porc
 
@@ -39,11 +38,9 @@ $ sudo pip install porc
 Next you'll want to clone repo (or just download the script) and configure it
 
 ```
-
 git clone https://github.com/0x3f8/OrchestrateToMongo.git
 
 ```
-
 Within the script you'll need to configure the following sections
 
 **Set the Orchestrate Endpoint**
@@ -51,7 +48,6 @@ Within the script you'll need to configure the following sections
 The URI line is likely right, but you'll want to set *orcHost* to match your Orchestrate datacenter.  If you haven't already done so, you should generate and API key for your collections as well.
 
 ```
-
 orcHost = 'api.ctl-uc1-a.orchestrate.io'
 orcURI = 'https://' + orcHost + '/v0'
 ```
@@ -68,7 +64,6 @@ If you're using the official MongoDB docker image you'll also need to mount a pa
 
 
 ```
-
 mongoEndpoint = '192.168.0.1'
 mongoPort = '27017'
 mongoURI = "mongodb://" + mongoEndpoint + ":" + mongoPort
@@ -78,7 +73,6 @@ mongoURI = "mongodb://" + mongoEndpoint + ":" + mongoPort
 e.g. if your database is called gadgets
 
 ```
-
 db = client.gadgets
 
 ```
@@ -90,16 +84,26 @@ This is a list of one or more Orchestrate collections you wish to populate into 
 e.g. To sync the collection *foo* use
 
 ```
-
 Collections = ['foo']
 ```
 
 or to sync *foo* and *bar* do
 
 ```
-
 Collections = ['foo', 'bar']
 ```
+
+# Set your unique ID.
+
+In the script you'll see the following reference
+
+```
+record['value']['id']
+```
+
+For my dataset this was a UUID that was generated for each record and was the same as what Orchestrate was using for the unique ID.  If you are using a unique ID in your key/value pairs you'll want to choose the field that matches.  If you don't have your own unique value, you have two choices.  You can used the values from Orchestrate which are at the record['key'] and record['ref'] references.  I may need to go back through my data once I get closer to production to verify that I'm not working with old records due to ref times.  I think Orchestrate keys aren't always unique and updates to records simply get a new ref and reftime.  The simplest solution if this is the case is to only update the record if the reftime is newer for the same key. 
+
+# Configure the credentials
 
 Finally you need to configure your credentials.  These will go in a file called *.netrc* that resides in the home folder of the user that will execute the script.  The file should only be owned by your user and set with permissions something like 0600.
 
@@ -125,6 +129,10 @@ machine api.ctl-uc1-a.orchestrate.io
 
 The script operates as follows
 
-1 Connect to Orchestrate
-2 Connect to MongoDB
-3 Authenticate to the specific MongoDB Database 
+1. Connect to Orchestrate
+2. Connect to MongoDB
+3. Authenticate to the specific MongoDB Database
+4. Iterate through each collection and
+- Create the collection if needed
+- Perform an update using the unique ID
+- If the record doesn't exist, one will be created
