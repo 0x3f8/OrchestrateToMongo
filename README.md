@@ -101,7 +101,7 @@ In the script you'll see the following reference
 record['value']['id']
 ```
 
-For my dataset this was a UUID that was generated for each record and was the same as what Orchestrate was using for the unique ID.  If you are using a unique ID in your key/value pairs you'll want to choose the field that matches.  If you don't have your own unique value, you have two choices.  You can used the values from Orchestrate which are at the record['key'] and record['ref'] references.  I may need to go back through my data once I get closer to production to verify that I'm not working with old records due to ref times.  I think Orchestrate keys aren't always unique and updates to records simply get a new ref and reftime.  The simplest solution if this is the case is to only update the record if the reftime is newer for the same key. 
+For my dataset this was a UUID that was generated for each record and was the same as what Orchestrate was using for the unique ID.  If you are using a unique ID in your key/value pairs you'll want to choose the field that matches.  If you don't have your own unique value, you have two choices.  You can used the values from Orchestrate which are at the record['key'] and record['ref'] references.  I may need to go back through my data once I get closer to production to verify that I'm not working with old records due to ref times.  I think Orchestrate keys aren't always unique and updates to records simply get a new ref and reftime.  The simplest solution if this is the case is to only update the record if the reftime is newer for the same key.  However, I'm pretty sure a standard list of the collection only includes newest items and you'd have to search for a specific key/ref to find older versions.
 
 # Configure the credentials
 
@@ -133,6 +133,7 @@ The script operates as follows
 2. Connect to MongoDB
 3. Authenticate to the specific MongoDB Database
 4. Iterate through each collection and
-- Create the collection if needed
-- Perform an update using the unique ID
-- If the record doesn't exist, one will be created
+
+ - Create the collection if needed
+ - Perform an update using the unique ID
+ - If the record doesn't exist, one will be created
