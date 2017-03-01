@@ -62,6 +62,8 @@ for collection in Collections:
         mongoQuery = json.loads(jsonQuery)
         update = record['value']
         update['_id'] = record['value']['id']
+        if update['created'] is not None:
+            update['created'] = DT.datetime.utcfromtimestamp(update['created']/1e3)
         result = db[collection].update(mongoQuery, update, upsert=True)
         if DEBUG == 1:
             if result['updatedExisting']:

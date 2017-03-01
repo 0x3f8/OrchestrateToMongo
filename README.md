@@ -104,6 +104,18 @@ For my dataset this was a UUID that was generated for each record and was the sa
 
 One caveat is that the Orchestrate record['key'] values are not unique due to their use of [Data Version History](https://orchestrate.io/docs/data-version-history).  My understanding is that with each record update the is a new object with the same key but a new *ref* and *reftime* key/value pairing.  Since I'm filtering my records by the unique key/value I've assigned in the record I believe I'm only pulling the latest data, but that remains to be tested.
 
+### Repair any date fields
+
+Another issue I ran into later in testing was the date field.  Our application was storing dates in Orchestrate as epoch times.  Mongodb on the other hand expects a datetime object in this field.
+Because these fields can be anywhere in your document you may need to write some loops to go through your document and fix these.   An example of a parent level time update from my script is
+
+```
+        if update['created'] is not None:
+            update['created'] = DT.datetime.utcfromtimestamp(update['created']/1e3)
+```
+
+This deals with empty dates and millisecond epoch dates by converting them back to seconds.  Work with your data and adjust as needed.
+
 ### Configure the credentials
 
 Finally you need to configure your credentials.  These will go in a file called *.netrc* that resides in the home folder of the user that will execute the script.  The file should only be owned by your user and set with permissions something like 0600.
