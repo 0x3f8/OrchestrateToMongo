@@ -100,7 +100,7 @@ In the script you'll see the following reference
 record['value']['id']
 ```
 
-For my dataset this was a UUID that was generated for each record and was the same as what Orchestrate was using for the unique ID.  If you are using a unique ID in your key/value pairs you'll want to choose the field that matches.  If you don't have your own unique value, you have two choices.  You can used the values from Orchestrate which are at the record['key'] and record['ref'] references or you can simply insert the data and MongoDB will generate a unique value for you.
+For my dataset this was a UUID that was generated for each record and was the same as what Orchestrate was using for the unique ID.  If you are using a unique ID in your key/value pairs you'll want to choose the field that matches.  If you don't have your own unique value, you have two choices.  You can use the values from Orchestrate which are at the record['key'] and record['ref'] references or you can simply insert the data and MongoDB will generate a unique value for you.
 
 One caveat is that the Orchestrate record['key'] values are not unique due to their use of [Data Version History](https://orchestrate.io/docs/data-version-history).  My understanding is that with each record update the is a new object with the same key but a new *ref* and *reftime* key/value pairing.  Since I'm filtering my records by the unique key/value I've assigned in the record I believe I'm only pulling the latest data, but that remains to be tested.
 
@@ -112,14 +112,21 @@ Because these fields can be anywhere in your document you may need to write some
 ```
         if update['created'] is not None:
             update['created'] = DT.datetime.utcfromtimestamp(update['created']/1e3)
+        else:
+            update['created'] = DT.datetime.utcfromtimestamp(1425143644)
 ```
 
-This deals with empty dates and millisecond epoch dates by converting them back to seconds.  Work with your data and adjust as needed.
+This deals with empty dates and millisecond epoch dates by converting them back to seconds.  Work with your data and adjust as needed.  
 
 
 ### Got Version?
 
-One last gotcha I ran into was the 'version' field.   Orchestrate didn't need this, but spring-data with mongodb may expect this to be present.  You'll be able to do queries and new inserts will work, but updates to migrated data may fail with a misleading duplicate _id error.   The solution is to make sure you're setting the version.  I took care of that in line 65 of my script.  You'll want to your code to see if you need this or not but I'm pretty sure you'll want to make sure you've got it, especially if you're using spring-data with the @Version annotation.
+One last gotcha I ran into was the 'version' field.   Orchestrate didn't need this, but spring-data with mongodb may expect this to be present.  You'll be able to do queries and new inserts will work, but updates to migrated data may fail with a misleading duplicate _id error.   The solution is to make sure you're setting the version.  I took care of that in line 65 of my script like so.
+ ```
+         update['version'] = bson.int64.Int64(1)
+ ```
+
+You'll want to test your code to see if you need this or not but I'm pretty sure you'll want to make sure you've got it, especially if you're using spring-data with the @Version annotation.
 
 ### Configure the credentials
 
