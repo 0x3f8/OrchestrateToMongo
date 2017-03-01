@@ -116,6 +116,11 @@ Because these fields can be anywhere in your document you may need to write some
 
 This deals with empty dates and millisecond epoch dates by converting them back to seconds.  Work with your data and adjust as needed.
 
+
+### Got Version?
+
+One last gotcha I ran into was the 'version' field.   Orchestrate didn't need this, but spring-data with mongodb may expect this to be present.  You'll be able to do queries and new inserts will work, but updates to migrated data may fail with a misleading duplicate _id error.   The solution is to make sure you're setting the version.  I took care of that in line 65 of my script.  You'll want to your code to see if you need this or not but I'm pretty sure you'll want to make sure you've got it, especially if you're using spring-data with the @Version annotation.
+
 ### Configure the credentials
 
 Finally you need to configure your credentials.  These will go in a file called *.netrc* that resides in the home folder of the user that will execute the script.  The file should only be owned by your user and set with permissions something like 0600.

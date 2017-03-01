@@ -7,8 +7,8 @@
 import sys
 import netrc
 import json
+import bson
 
-import porc
 from porc import Client
 
 from pymongo import MongoClient
@@ -62,6 +62,7 @@ for collection in Collections:
         mongoQuery = json.loads(jsonQuery)
         update = record['value']
         update['_id'] = record['value']['id']
+        update['version'] = bson.int64.Int64(1)
         if update['created'] is not None:
             update['created'] = DT.datetime.utcfromtimestamp(update['created']/1e3)
         result = db[collection].update(mongoQuery, update, upsert=True)
