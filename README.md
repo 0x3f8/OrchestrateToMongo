@@ -126,7 +126,7 @@ One last gotcha I ran into was the 'version' field.   Orchestrate didn't need th
          update['version'] = bson.int64.Int64(1)
  ```
 
-You'll want to test your code to see if you need this or not but I'm pretty sure you'll want to make sure you've got it, especially if you're using spring-data with the @Version annotation.
+You'll want to test your code to see if you need this or not but I'm pretty sure you'll want to make sure you've got it, especially if you're using spring-data with the @Version annotation.  If your data already has the version you'll want to make sure it's migrated as a NumberLong object instead of a string.
 
 ### Configure the credentials
 
